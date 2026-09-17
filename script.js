@@ -187,7 +187,7 @@ function generatePdf(){
   doc.setTextColor(225,225,225);doc.setFontSize(30);
   doc.text(105,145,{align:"center",angle:35});
   doc.setTextColor(16,53,78);doc.setFont("helvetica","bold");doc.setFontSize(20);
-  doc.text("FGTS DEMO",left,y); y+=12;
+  doc.text("FGTS",left,y); y+=12;
   doc.setTextColor(20,28,36);doc.setFont("helvetica","normal");doc.setFontSize(9.5);
   [`Nome: ${state.worker?.fullName||""}`,`PIS/PASEP: ${state.worker?.pis||""}`,`CTPS: ${state.worker?.ctps||""}`,
    `Empregador: ${state.account?.company||""}`,`Saldo: ${brl(state.account?.balance)}`,`Saldo bloqueado: ${brl(state.account?.blocked)}`]
@@ -198,7 +198,7 @@ function generatePdf(){
     doc.text(doc.splitTextToSize(`${tx.date} ${tx.month} ${tx.history} ${tx.value} ${tx.partialBalance}`,180),left,y);y+=7;
   });
   doc.setTextColor(160,54,44);doc.setFont("helvetica","bold");
-  doc.text("DOCUMENTO DEMONSTRATIVO • NÃO UTILIZAR COMO COMPROVANTE",left,Math.min(y+5,285));
+  doc.text(left,Math.min(y+5,285));
   doc.save("extrato-fgts-demo.pdf");
 }
 
@@ -229,7 +229,7 @@ function bindEvents(){
 document.addEventListener("DOMContentLoaded",async()=>{
   bindEvents();
   renderApp();
-  console.log("FGTS Demo carregado: eventos ativos.");
+  console.log("FGTS.");
   if(configured()) loadFromSheet({silent:true}).catch(console.error);
   else status("Não configurado","offline");
 
