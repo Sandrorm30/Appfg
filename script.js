@@ -199,7 +199,7 @@ function generatePdf(){
   });
   doc.setTextColor(160,54,44);doc.setFont("helvetica","bold");
   doc.text(left,Math.min(y+5,285));
-  doc.save("extrato-fgts-demo.pdf");
+  doc.save("extrato-fgts.pdf");
 }
 
 function bindEvents(){
