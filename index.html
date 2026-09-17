@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador FGTS</title>
+    <!-- Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- FontAwesome para ícones idênticos ao aplicativo original -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <!-- Biblioteca jsPDF via CDN para geração do relatório em PDF -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f3f4f6; }
+        .bg-caixa { background-color: #005ca9; }
+        .text-caixa { color: #005ca9; }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col relative bg-gray-100 shadow-2xl">
+
+    <!-- ======================================================== -->
+    <!-- BOTÃO FLUTUANTE DO MODO ADMINISTRADOR (PAINEL DE EDIÇÃO) -->
+    <!-- ======================================================== -->
+    <button onclick="toggleAdminPanel()" class="fixed top-20 right-4 bg-orange-500 text-white p-3 rounded-full shadow-lg z-50 hover:bg-orange-600 transition">
+        <i class="fas fa-cog"></i> Edição
+    </button>
+
+    <!-- PAINEL ADMINISTRATIVO (CONFIGURAÇÃO DO GOOGLE SHEETS) -->
+    <div id="admin-panel" class="hidden fixed inset-0 bg-white z-50 p-6 overflow-y-auto max-w-md mx-auto">
+        <div class="flex justify-between items-center mb-6 border-b pb-2">
+            <h2 class="text-xl font-bold text-gray-800">Painel de Controle (Google Sheets)</h2>
+            <button onclick="toggleAdminPanel()" class="text-red-500 font-bold text-lg">Fechar X</button>
+        </div>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Nome do Trabalhador:</label>
+                <input type="text" id="edit-nome" class="w-full border p-2 rounded mt-1" value="SANDRO RIBEIRO MEDEIROS">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Nome do Empregador (Circulado 1):</label>
+                <input type="text" id="edit-empresa" class="w-full border p-2 rounded mt-1" value="PREF MUNIC RIO GRANDE">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Saldo Total / Conta (Circulado 2):</label>
+                <input type="text" id="edit-saldo" class="w-full border p-2 rounded mt-1" value="17.038,90">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700">Valor Bloqueado (Circulado 3):</label>
+                <input type="text" id="edit-bloqueado" class="w-full border p-2 rounded mt-1" value="11.461,58">
+            </div>
+            <button onclick="salvarAlteracoesNaPlanilha()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold shadow mt-4">
+                Salvar na Planilha do Google
+            </button>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TELA 1: TELA INICIAL (Baseada na Imagem 1) -->
+    <!-- ======================================================== -->
+    <div id="tela-1" class="flex-1 flex flex-col bg-white pb-20">
+        <!-- Cabeçalho Azul -->
+        <div class="bg-caixa text-white px-5 pt-8 pb-6 rounded-b-[2rem] shadow-md">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-2">
+                    <span class="text-orange-400 text-xl font-black">X</span>
+                    <span class="text-sm font-light">Olá, <strong id="t1-nome-header">SANDRO</strong></span>
+                </div>
+                <span class="font-black text-xl tracking-wider">FGTS</span>
+            </div>
+            <div class="mt-4">
+                <p class="text-xs uppercase tracking-wider opacity-80 flex items-center gap-2">
+                    <i class="fas fa-coins text-orange-400"></i> Saldo Total
+                </p>
+                <h1 class="text-2xl font-bold mt-1 flex items-center gap-3">
+                    <i class="far fa-eye text-lg"></i> R$ <span class="lbl-saldo">17.038,90</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="px-5 mt-6 space-y-4">
+            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="bg-orange-500 text-white rounded-lg p-2 text-xs font-bold">F</div>
+                    <h3 class="font-bold text-gray-700">Resumo do seu FGTS</h3>
+                </div>
+
+                <!-- CARD CLICÁVEL (CIRCULADO EM VERMELHO NA IMAGEM 1) -->
+                <div onclick="navegarPara(2)" class="border border-pink-500 p-4 rounded-xl flex justify-between items-center bg-gray-50 cursor-pointer hover:bg-gray-100 transition relative">
+                    <div class="absolute -top-3 left-4 bg-pink-500 text-white text-[10px] px-2 py-0.5 rounded-full">Área Editável</div>
+                    <div>
+                        <h4 class="font-bold text-sm text-blue-900 uppercase lbl-empresa">PREF MUNIC RIO GRANDE</h4>
+                        <p class="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                            <i class="fas fa-lock text-[10px] text-gray-400"></i> R$ <span class="lbl-saldo">17.038,90</span>
+                        </p>
+                    </div>
+                    <i class="fas fa-chevron-right text-caixa"></i>
+                </div>
+
+                <!-- Outro card apenas para layout -->
+                <div class="border border-gray-200 p-4 rounded-xl flex justify-between items-center mt-3 opacity-60">
+                    <div>
+                        <h4 class="font-bold text-sm text-blue-900 uppercase">MOBRA SERV VIGIL LTDA</h4>
+                        <p class="text-xs text-gray-500 mt-1">R$ 0,00</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-caixa"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra de Navegação Inferior Móvel -->
+        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t flex justify-around py-3 text-gray-400 text-xs">
+            <div class="text-center text-blue-600 font-bold"><i class="fas fa-home text-lg block mb-1"></i>Principal</div>
+            <div class="text-center"><i class="fas fa-money-bill-wave text-lg block mb-1"></i>Saques</div>
+            <div class="text-center"><i class="far fa-user text-lg block mb-1"></i>Meus dados</div>
+            <div class="text-center"><i class="fas fa-bars text-lg block mb-1"></i>Mais</div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TELA 2: EXTRATO DETALHADO (Baseada na Imagem 2) -->
+    <!-- ======================================================== -->
+    <div id="tela-2" class="hidden flex-1 flex flex-col bg-white pb-6">
+        <!-- Cabeçalho Superior de Voltar -->
+        <div class="bg-caixa text-white px-4 py-4 flex items-center space-x-4 shadow">
+            <button onclick="navegarPara(1)" class="text-xl font-bold"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-lg font-bold">Extrato detalhado</h2>
+        </div>
+
+        <div class="p-5 flex-1 border-2 border-pink-500 m-2 rounded-xl relative bg-white">
+            <div class="absolute -top-3 left-4 bg-pink-500 text-white text-[10px] px-2 py-0.5 rounded-full">Área Detalhada Editável</div>
+
+            <div class="text-center mt-2">
+                <h3 class="font-black text-gray-800 text-lg uppercase lbl-empresa" id="t2-empresa">PREF MUNIC RIO GRANDE</h3>
+                <p class="text-gray-500 text-xs mt-3">Saldo desta conta</p>
+                <h2 class="text-2xl font-black text-blue-900 mt-1">R$ <span class="lbl-saldo">17.038,90</span></h2>
+                <p class="text-gray-400 text-[10px] mt-1">atualizado em 16/09/2026</p>
+            </div>
+
+            <!-- Tarja de Saldo Bloqueado -->
+            <div class="bg-red-100 text-red-700 text-xs font-semibold rounded-lg p-3 text-center my-5 border border-red-200">
+                <span class="bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded mr-1"><i class="fas fa-lock text-[8px]"></i> SALDO BLOQUEADO</span>
+                O valor de R$ <span id="lbl-bloqueado">11.461,58</span> está bloqueado.
+            </div>
+
+            <!-- Links de Ação -->
+            <div class="flex justify-around text-xs font-bold text-orange-500 border-b pb-4 mb-4">
+                <button onclick="gerarPDF()" class="hover:underline flex items-center gap-1">
+                    <i class="far fa-file-pdf text-base"></i> Gerar extrato PDF
+                </button>
+                <span class="text-gray-300">|</span>
+                <button class="text-gray-400 cursor-not-allowed">Dados do contrato</button>
+            </div>
+
+            <!-- Lista de Extrato Baseada na Imagem 2 -->
+            <div class="space-y-4 text-xs">
+                <p class="font-bold text-gray-500 border-b pb-1">Agosto/2026</p>
+                <div class="flex justify-between items-start">
+                    <span class="text-red-500 font-bold w-12">21/08</span>
+                    <div class="flex-1 px-2">
+                        <p class="font-semibold text-gray-700">CREDITO DE JAM 0,004199</p>
+                        <p class="text-gray-400 text-[10px] mt-0.5">Saldo parcial <span class="text-gray-500 font-medium">R$ 17.038,90</span></p>
+                    </div>
+                    <span class="font-bold text-blue-900 text-right">R$ 68,22</span>
+                </div>
+                <div class="flex justify-between items-start">
