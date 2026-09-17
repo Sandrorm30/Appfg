@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0c4f7a" />
+  <title>FGTS Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- jsPDF via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <button id="editFab" class="edit-fab" aria-label="Editar dados">⚙ Editar</button>
+
+    <!-- TELA 1 -->
+    <section id="screenHome" class="screen active">
+      <header class="hero-header">
+        <div class="hero-inner">
+          <div class="hello">Olá, <span id="homeUserName">SANDRO</span></div>
+          <div class="brand-lockup" aria-label="Marca simulada">
+            <span class="brand-icon">F</span>
+            <span class="brand-text">FGTS DEMO</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="home-content">
+        <section class="card total-card">
+          <span class="label">Saldo total das contas</span>
+          <strong id="totalBalance" class="big-balance">R$ 17.038,90</strong>
+          <button class="text-link" type="button">Ver detalhes do saldo</button>
+        </section>
+
+        <h2>Resumo do seu FGTS</h2>
+
+        <button id="accountCard" class="card account-card" type="button">
+          <div>
+            <div id="homeCompany" class="account-title">PREF MUNIC RIO GRANDE</div>
+            <div id="homeAccountBalance" class="account-value">R$ 17.038,90</div>
+          </div>
+          <span class="chevron">›</span>
+        </button>
+
+        <section class="card simple-card">
+          <div>
+            <strong>Saques</strong>
+            <span>Consulte modalidades disponíveis</span>
+          </div>
+          <span class="chevron">›</span>
+        </section>
+
+        <section class="card simple-card">
+          <div>
+            <strong>Meus dados</strong>
+            <span>Informações cadastrais e preferências</span>
+          </div>
+          <span class="chevron">›</span>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Navegação">
+        <button class="nav-item active" type="button">
+          <span class="nav-icon">⌂</span>
+          <span>Principal</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-icon">⇩</span>
+          <span>Saques</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-icon">◉</span>
+          <span>Meus dados</span>
+        </button>
+        <button class="nav-item" type="button">
+          <span class="nav-icon">•••</span>
+          <span>Mais</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- TELA 2 -->
+    <section id="screenDetail" class="screen">
+      <header class="detail-topbar">
+        <button id="backBtn" class="back-btn" type="button">‹ Extrato detalhado</button>
+      </header>
+
+      <main class="detail-content">
+        <section class="card detail-card">
+          <div id="detailCompany" class="detail-company">PREF MUNIC RIO GRANDE</div>
+
+          <span class="label">Saldo desta conta</span>
+          <strong id="detailBalance" class="detail-balance">R$ 17.038,90</strong>
+
+          <div class="blocked-box">
+            <strong>SALDO BLOQUEADO</strong>
+            <span>O valor de <b id="blockedValue">R$ 11.461,58</b> está bloqueado.</span>
+          </div>
+
+          <button id="pdfBtn" class="pdf-link" type="button">Gerar extrato PDF</button>
+
+          <div class="demo-warning">
+            Protótipo demonstrativo. O PDF gerado contém marca d’água e não possui validade oficial.
+          </div>
+        </section>
+
+        <div id="transactionsContainer"></div>
+      </main>
+    </section>
+  </div>
+
+  <!-- MODAL ADMIN -->
+  <div id="adminModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <strong>Editar dados</strong>
+          <small>As alterações aparecem imediatamente nas duas telas.</small>
+        </div>
+        <button id="closeModalBtn" class="close-btn" type="button">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-field">
+          <label for="companyInput">Nome da empresa</label>
+          <input id="companyInput" type="text" />
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="balanceInput">Saldo</label>
+            <input id="balanceInput" type="text" />
+          </div>
+          <div class="form-field">
+            <label for="blockedInput">Valor bloqueado</label>
+            <input id="blockedInput" type="text" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="rescisoryInput">Valor para fins rescisórios</label>
+          <input id="rescisoryInput" type="text" />
+        </div>
+
+        <hr />
+
+        <div class="section-row">
+          <strong>Lançamentos</strong>
+          <button id="addTransactionBtn" class="secondary-btn" type="button">+ Adicionar</button>
+        </div>
+
+        <div id="transactionsEditor"></div>
+
+        <div class="editor-footer">
+          <button id="resetBtn" class="secondary-btn" type="button">Restaurar exemplo</button>
+          <button id="exportJsonBtn" class="primary-btn" type="button">Exportar JSON</button>
+        </div>
+
+        <p class="helper">
+          Para integrar com uma planilha depois, substitua o objeto <code>mockSheetData</code> no script ou carregue um JSON publicado pela sua API.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
