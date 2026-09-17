@@ -185,7 +185,7 @@ function generatePdf(){
   const doc=new jsPDF({unit:"mm",format:"a4"});
   let y=16, left=14;
   doc.setTextColor(225,225,225);doc.setFontSize(30);
-  doc.text("DEMONSTRAÇÃO • SEM VALIDADE OFICIAL",105,145,{align:"center",angle:35});
+  doc.text(105,145,{align:"center",angle:35});
   doc.setTextColor(16,53,78);doc.setFont("helvetica","bold");doc.setFontSize(20);
   doc.text("FGTS DEMO",left,y); y+=12;
   doc.setTextColor(20,28,36);doc.setFont("helvetica","normal");doc.setFontSize(9.5);
