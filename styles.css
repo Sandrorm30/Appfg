@@ -29,7 +29,7 @@ button{cursor:pointer}
 .hello{font-size:18px;font-weight:800}
 .brand-lockup{display:flex;align-items:center;gap:8px;font-weight:900}
 .brand-icon{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--blue);display:grid;place-items:center}
-.brand-text{font-size:18px}
+.brand-text{font-size:24px}
 .content{padding:0 14px 100px}
 .home-offset{margin-top:-18px}
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(12,79,122,.05)}
