@@ -1,6 +1,6 @@
 {
-  "name": "FGTS Demo",
-  "short_name": "FGTS Demo",
+  "name": "FGTS",
+  "short_name": "FGTS",
   "description": "Aplicativo demonstrativo",
   "start_url": "./index.html",
   "scope": "./",
