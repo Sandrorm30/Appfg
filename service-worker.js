@@ -1,4 +1,4 @@
-const CACHE_NAME = "fgts-demo-pwa-v1";
+const CACHE_NAME = "fgts-demo-pwa-v2";
 const APP_SHELL = [
   "./","./index.html","./styles.css","./script.js","./pwa.js",
   "./manifest.webmanifest","./offline.html",
