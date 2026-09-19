@@ -187,7 +187,7 @@ function generatePdf(){
   doc.setTextColor(225,225,225);doc.setFontSize(30);
   doc.text("",105,145,{align:"center",angle:35});
   doc.setTextColor(16,53,78);doc.setFont("helvetica","bold");doc.setFontSize(20);
-  doc.text("FGTS DEMO",left,y); y+=12;
+  doc.text("FGTS",left,y); y+=12;
   doc.setTextColor(20,28,36);doc.setFont("helvetica","normal");doc.setFontSize(9.5);
   [`Nome: ${state.worker?.fullName||""}`,`PIS/PASEP: ${state.worker?.pis||""}`,`CTPS: ${state.worker?.ctps||""}`,
    `Empregador: ${state.account?.company||""}`,`Saldo: ${brl(state.account?.balance)}`,`Saldo bloqueado: ${brl(state.account?.blocked)}`]
